@@ -23,7 +23,7 @@ app.post('/api/users', async (req, res) => {
   const { username } = await req.body;
 
   users.push({ username, _id: v4() });
-  res.json(users);
+  res.json({ username, _id: v4() });
 })
 
 app.post('/api/users/:_id/exercises', (req, res) => {
@@ -37,6 +37,8 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
   const { description, duration, date } = req.body;
 
+  Number(duration);
+
   const exercise = {
     description,
     duration,
@@ -45,8 +47,35 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
   user.log = user.log ? [...user.log, exercise] : [exercise];
 
-  res.json(user);
+  res.json({
+    username: user.username,
+    description: exercise.description,
+    duration: exercise.duration,
+    date: exercise.date,
+    _id: user._id,
+  });
 })
+
+app.get('/api/users/:_id/logs', (req, res) => {
+  const { _id } = req.params;
+  console.log(users, _id)
+
+  const user = users.find(user => user._id === _id);
+
+  if (!user) {
+    return res.json({ error: 'User not found' });
+  }
+
+  // const { from, to, limit } = req.query;
+  // study this part and write it yourself
+
+  res.json({
+    _id: user._id,
+    username: user.username,
+    count: log.length,
+    log,
+  });
+});
 
 
 
