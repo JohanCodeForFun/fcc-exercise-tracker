@@ -19,7 +19,6 @@ app.get('/api/users', (req, res) => {
 });
 
 app.post('/api/users', async (req, res) => {
-  console.log(req.body)
   const { username } = await req.body;
 
   const user = await users.find(user => user.username === username);
